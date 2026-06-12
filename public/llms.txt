@@ -1,0 +1,32 @@
+# Miroslav Novotný
+Full-stack Developer & Student IT
+
+## Summary
+I am an enthusiastic IT student aiming for ČVUT FIT with experience in full-stack development. I specialize in Next.js, Java (Spring Boot), and Rust. I am proficient in working with relational databases (SQL), Python scripting, and Linux administration.
+
+## Technical Skills
+- **Frontend**: Next.js, React, TypeScript, Tailwind CSS
+- **Backend**: Java (Spring Boot), Rust (Leptos, Wasm), Node.js, Python
+- **Databases**: PostgreSQL, MySQL/MariaDB, Redis
+- **DevOps/Other**: Linux (Administration), Docker, Git, AI tools
+
+## Key Projects
+- **Expertov**: Production SaaS platform built with Next.js, tRPC, Drizzle ORM, PostgreSQL, and Redis.
+- **Vyhledávač Adres (RÚIAN)**: Address search engine with full-text indexing built in Rust/Wasm with MariaDB.
+- **Simple Impostor Game**: Modern PWA implementation of a party game in React/Tailwind.
+- **Fractal Generator**: Mathematical rendering engine (Barnsley fern) built in Rust.
+- **Flashscore Scraper**: Microservice for data extraction from Flashscore.
+
+## Contact & Links
+- **Website**: https://novotnymiroslav.cz
+- **GitHub**: https://github.com/Miroslav-Novotny64
+- **LinkedIn**: https://www.linkedin.com/in/miroslavnovotny64/
+- **Email**: miroslav.novotny64@gmail.com
+- **Location**: Prague, Czech Republic
+
+## Availability
+Available for remote and on-site collaborations. Focus on high-performance applications and scalable systems.
+
+## Freelance
+I am available for freelance work. I specialize in full-stack development with a focus on Next.js, Java (Spring Boot), and Rust. I am also proficient in working with relational databases (SQL), Python scripting, and Linux administration.
+I can create a website for you or a web application. I can also help you with your existing project. I am a quick learner and can pick up new technologies quickly. I am also a team player and can work well in a team environment.

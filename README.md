@@ -1,29 +1,46 @@
-# Create T3 App
+# Sledování času
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+Jednoduchá webová aplikace pro sledování odpracovaného času na projektech.
 
-## What's next? How do I make an app with this?
+## Funkce
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+* **Kalendář:** Rychlý týdenní přehled pro zapisování odpracovaných hodin k jednotlivým projektům kliknutím do mřížky.
+* **Projekty:** Správa a vytváření projektů s možností přiřazení vlastních barev.
+* **Výsledky:** Měsíční statistiky a vizualizace odpracovaného času pomocí grafů (PieChart a BarChart).
+* **Motivy:** Podpora tmavého a světlého motivu (přepínač v bočním panelu).
+* **Autentizace:** Přihlášení přes GitHub (pomocí Better Auth).
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+## Ukázky z aplikace
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+### Kalendář (Světlý/Tmavý motiv)
+![Kalendář](public/calednar.png)
 
-## Learn More
+### Výsledky a statistiky
+![Výsledky](public/result.png)
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+## Spuštění projektu
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+1. **Instalace závislostí:**
+   ```bash
+   bun install
+   ```
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+2. **Konfigurace prostředí:**
+   Vytvořte soubor `.env` na základě šablony v `.env.example` a doplňte připojení k databázi a GitHub OAuth klíče.
 
-## How do I deploy this?
+3. **Databáze:**
+   Pokud používáte Docker, můžete spustit připravenou databázi:
+   ```bash
+   ./start-database.sh
+   ```
+   Následně propusťte schéma do databáze:
+   ```bash
+   bun run db:push
+   ```
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+4. **Spuštění vývojového serveru:**
+   ```bash
+   bun dev
+   ```
+
+Aplikace poběží na adrese [http://localhost:3000](http://localhost:3000).
