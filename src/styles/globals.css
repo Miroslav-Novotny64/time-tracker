@@ -1,0 +1,95 @@
+@import "tailwindcss";
+
+@theme {
+	--font-sans:
+		var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif,
+		"Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+	--color-background: var(--background);
+	--color-foreground: var(--foreground);
+
+	--color-card: var(--card);
+	--color-card-foreground: var(--card-foreground);
+
+	--color-popover: var(--popover);
+	--color-popover-foreground: var(--popover-foreground);
+
+	--color-primary: var(--primary);
+	--color-primary-foreground: var(--primary-foreground);
+
+	--color-secondary: var(--secondary);
+	--color-secondary-foreground: var(--secondary-foreground);
+
+	--color-muted: var(--muted);
+	--color-muted-foreground: var(--muted-foreground);
+
+	--color-accent: var(--accent);
+	--color-accent-foreground: var(--accent-foreground);
+
+	--color-destructive: var(--destructive);
+	--color-destructive-foreground: var(--destructive-foreground);
+
+	--color-border: var(--border);
+	--color-input: var(--input);
+	--color-ring: var(--ring);
+}
+
+:root {
+	--background: #fcfdfc;
+	--foreground: #232e21;
+	--card: #fcfdfc;
+	--card-foreground: #232e21;
+	--popover: #fcfdfc;
+	--popover-foreground: #232e21;
+	--primary: #f42272;
+	--primary-foreground: #fcfdfc;
+	--secondary: #e5e9e5;
+	--secondary-foreground: #232e21;
+	--muted: #f1f4f1;
+	--muted-foreground: #667364;
+	--accent: #fdf2f6;
+	--accent-foreground: #f42272;
+	--destructive: #ef4444;
+	--destructive-foreground: #fcfdfc;
+	--border: #d9dfd8;
+	--input: #d9dfd8;
+	--ring: #f42272;
+	--radius: 0.5rem;
+}
+
+.dark {
+	--background: #0f0f0f;
+	--foreground: #f9fafb;
+	--card: #1a1a1b;
+	--card-foreground: #f9fafb;
+	--popover: #121213;
+	--popover-foreground: #f9fafb;
+	--primary: #f42272;
+	--primary-foreground: #f9fafb;
+	--secondary: #27272a;
+	--secondary-foreground: #f9fafb;
+	--muted: #1e1e1f;
+	--muted-foreground: #a1a1aa;
+	--accent: #27272a;
+	--accent-foreground: #f9fafb;
+	--destructive: #ef4444;
+	--destructive-foreground: #f9fafb;
+	--border: #27272a;
+	--input: #27272a;
+	--ring: #f42272;
+}
+
+@keyframes calendarTransition {
+	from {
+		opacity: 0;
+		transform: translateY(4px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.animate-calendar-change {
+	animation: calendarTransition 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
