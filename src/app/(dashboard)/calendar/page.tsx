@@ -268,17 +268,17 @@ export default function CalendarPage() {
 			{/* Calendar Grid */}
 			<ScrollArea className="flex-1 rounded-xl border border-border bg-card/30">
 				<div
-					className="min-w-[800px] animate-calendar-change"
+					className="min-w-[800px] animate-calendar-change uppercase"
+					style={{ fontFamily: "Arial, sans-serif" }}
 					key={startDateStr}
 				>
-					{/* Header Row */}
 					<div className="sticky top-0 z-10 flex border-border border-b bg-card">
-						<div className="w-20 border-border border-r p-3 text-center font-medium text-muted-foreground text-xs">
+						<div className="flex w-28 shrink-0 items-center justify-center border-border border-r p-3 text-center font-medium text-muted-foreground text-xs">
 							Čas
 						</div>
 						{weekDays.map((day) => (
 							<div
-								className="flex-1 border-border border-r p-3 text-center last:border-0"
+								className="flex-1 min-w-0 border-border border-r p-3 text-center last:border-0"
 								key={day.toISOString()}
 							>
 								<div className="font-semibold text-sm">
@@ -298,8 +298,8 @@ export default function CalendarPage() {
 							id={`hour-${time}`}
 							key={time}
 						>
-							<div className="flex w-20 items-center justify-center border-border border-r p-2 text-center text-muted-foreground text-xs">
-								{time}
+							<div className="flex w-28 shrink-0 items-center justify-center border-border border-r p-2 text-center text-muted-foreground text-[11px] tracking-tight whitespace-nowrap">
+								{time} - {String((Number.parseInt(time.split(":")[0]!) + 1) % 24).padStart(2, "0")}:00
 							</div>
 							{weekDays.map((day) => {
 								const dateStr = formatDate(day);
@@ -307,7 +307,7 @@ export default function CalendarPage() {
 
 								return (
 									<div
-										className="flex flex-1 cursor-pointer items-center justify-center border-border/50 border-r p-1 transition-colors last:border-0"
+										className="flex flex-1 min-w-0 cursor-pointer items-center justify-center border-border/50 border-r p-1 transition-colors last:border-0"
 										key={dateStr}
 										onClick={() => handleCellClick(dateStr, time)}
 										onKeyDown={(e) => {
@@ -337,7 +337,7 @@ export default function CalendarPage() {
 														className="shrink-0 text-foreground/80 drop-shadow-sm"
 														size={14}
 													/>
-													<span className="truncate px-1 font-semibold text-foreground text-xs leading-tight drop-shadow-md">
+													<span className="truncate px-1 font-semibold text-foreground text-[10px] leading-tight drop-shadow-md">
 														{log.project.name}
 													</span>
 												</>

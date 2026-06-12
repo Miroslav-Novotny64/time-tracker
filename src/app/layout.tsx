@@ -1,7 +1,7 @@
 import "@/styles/globals.css";
 
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Funnel_Display } from "next/font/google";
 import { ThemeProvider } from "@/app/_components/theme-provider";
 import { TRPCReactProvider } from "@/trpc/react";
 
@@ -12,16 +12,18 @@ export const metadata: Metadata = {
 	icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
-const geist = Geist({
+const funnelDisplay = Funnel_Display({
+	variable: "--font-funnel-display",
 	subsets: ["latin"],
-	variable: "--font-geist-sans",
+	display: "swap",
+	fallback: ["Arial", "sans-serif"],
 });
 
 export default function RootLayout({
 	children,
 }: Readonly<{ children: React.ReactNode }>) {
 	return (
-		<html className={`${geist.variable}`} lang="cs" suppressHydrationWarning>
+		<html className={`${funnelDisplay.variable}`} lang="cs" suppressHydrationWarning>
 			<body>
 				<TRPCReactProvider>
 					<ThemeProvider
