@@ -7,7 +7,7 @@ import {
 	Loader2,
 	PieChart as PieChartIcon,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
 	Bar,
 	BarChart,
@@ -38,6 +38,30 @@ const formatDate = (date: Date) => {
 
 export default function ResultsPage() {
 	const [currentMonth, setCurrentMonth] = useState(new Date());
+	const [hourlyRate, setHourlyRate] = useState<number | "">("");
+
+	useEffect(() => {
+		const saved = localStorage.getItem("hourlyRate");
+		if (saved) {
+			const parsed = Number.parseFloat(saved);
+			if (!Number.isNaN(parsed)) {
+				setHourlyRate(parsed);
+			}
+		}
+	}, []);
+
+	const handleHourlyRateChange = (val: string) => {
+		if (val === "") {
+			setHourlyRate("");
+			localStorage.removeItem("hourlyRate");
+			return;
+		}
+		const parsed = Number.parseFloat(val);
+		if (!Number.isNaN(parsed)) {
+			setHourlyRate(parsed);
+			localStorage.setItem("hourlyRate", parsed.toString());
+		}
+	};
 
 	const { start, end } = useMemo(
 		() => getMonthStartEnd(currentMonth),
@@ -67,13 +91,13 @@ export default function ResultsPage() {
 	const stats = useMemo(() => {
 		if (!logs || !projects) return { totalHours: 0, byProject: [], byDay: [] };
 
-		// Total hours (each log is 0.5 hours)
-		const totalHours = logs.length * 0.5;
+		// Total hours (each log is 1 hour)
+		const totalHours = logs.length;
 
 		// By Project
 		const projectHours: Record<string, number> = {};
 		logs.forEach((log) => {
-			projectHours[log.projectId] = (projectHours[log.projectId] || 0) + 0.5;
+			projectHours[log.projectId] = (projectHours[log.projectId] || 0) + 1;
 		});
 
 		const byProject = Object.entries(projectHours)
@@ -89,22 +113,33 @@ export default function ResultsPage() {
 
 		// By Day
 		const daysInMonth = end.getDate();
-		const dailyHours: Record<string, number> = {};
+		const dailyHours: Record<string, Record<string, number>> = {};
 		for (let i = 1; i <= daysInMonth; i++) {
 			const d = new Date(start.getFullYear(), start.getMonth(), i);
-			dailyHours[formatDate(d)] = 0;
+			const dateStr = formatDate(d);
+			const initialTimes: Record<string, number> = {};
+			for (const p of projects) {
+				initialTimes[p.id] = 0;
+			}
+			initialTimes["Neznámý"] = 0;
+			dailyHours[dateStr] = initialTimes;
 		}
 
 		logs.forEach((log) => {
-			const current = dailyHours[log.date];
-			if (current !== undefined) {
-				dailyHours[log.date] = current + 0.5;
+			const dayData = dailyHours[log.date];
+			if (dayData !== undefined) {
+				const project = projects.find((p) => p.id === log.projectId);
+				const key = project ? project.id : "Neznámý";
+				dayData[key] = (dayData[key] || 0) + 1;
 			}
 		});
 
-		const byDay = Object.entries(dailyHours).map(([date, hours]) => {
+		const byDay = Object.entries(dailyHours).map(([date, projectTimes]) => {
 			const day = Number.parseInt(date.split("-")[2]!, 10);
-			return { name: day.toString(), hours };
+			return {
+				name: day.toString(),
+				...projectTimes,
+			};
 		});
 
 		return { totalHours, byProject, byDay };
@@ -139,7 +174,7 @@ export default function ResultsPage() {
 					</div>
 				</div>
 
-				{isLoading ? (
+				{isLoading || !projects ? (
 					<div className="flex justify-center p-12">
 						<Loader2 className="animate-spin text-primary" size={48} />
 					</div>
@@ -148,15 +183,49 @@ export default function ResultsPage() {
 						className="grid animate-calendar-change gap-6 md:grid-cols-3"
 						key={currentMonth.toISOString()}
 					>
-						{/* Summary Card */}
-						<div className="col-span-1 flex flex-col items-center justify-center rounded-xl border border-border bg-card/50 p-6">
-							<span className="mb-2 font-medium text-lg text-muted-foreground">
-								Celkový odpracovaný čas
-							</span>
-							<span className="font-extrabold text-6xl text-primary">
-								{stats.totalHours.toFixed(1)}{" "}
-								<span className="text-2xl text-primary">h</span>
-							</span>
+						<div className="col-span-1 flex flex-col gap-6">
+							{/* Summary Card */}
+							<div className="flex flex-col items-center justify-center rounded-xl border border-border bg-card/50 p-6">
+								<span className="mb-2 font-medium text-lg text-muted-foreground">
+									Celkový odpracovaný čas
+								</span>
+								<span className="font-extrabold text-6xl text-primary">
+									{stats.totalHours.toFixed(1)}{" "}
+									<span className="text-2xl text-primary">h</span>
+								</span>
+							</div>
+
+							{/* Earnings Card */}
+							<div className="flex flex-col rounded-xl border border-border bg-card/50 p-6">
+								<h3 className="mb-4 font-semibold text-lg text-foreground">
+									Finanční přehled
+								</h3>
+								<div className="flex flex-col gap-3">
+									<div className="flex flex-col gap-1">
+										<label htmlFor="hourly-rate" className="text-muted-foreground text-xs font-medium">
+											Hodinová sazba (Kč/h)
+										</label>
+										<input
+											id="hourly-rate"
+											type="number"
+											min="0"
+											placeholder="Zadejte sazbu..."
+											className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none"
+											value={hourlyRate}
+											onChange={(e) => handleHourlyRateChange(e.target.value)}
+										/>
+									</div>
+									<div className="mt-2 flex flex-col">
+										<span className="text-muted-foreground text-xs font-medium">
+											Odhadovaný výdělek
+										</span>
+										<span className="font-extrabold text-3xl text-primary mt-1">
+											{((typeof hourlyRate === "number" ? hourlyRate : 0) * stats.totalHours).toLocaleString("cs-CZ")}{" "}
+											<span className="text-lg font-semibold">Kč</span>
+										</span>
+									</div>
+								</div>
+							</div>
 						</div>
 
 						{/* Project Breakdown */}
@@ -235,6 +304,7 @@ export default function ResultsPage() {
 								<ResponsiveContainer height="100%" width="100%">
 									<BarChart
 										data={stats.byDay}
+										barSize={20}
 										margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
 									>
 										<CartesianGrid
@@ -262,13 +332,25 @@ export default function ResultsPage() {
 												borderRadius: "8px",
 											}}
 											cursor={{ fill: "rgba(255,255,255,0.05)" }}
-											formatter={(value: any) => [`${value} h`, "Čas"]}
+											formatter={(value: any, name: any) => [`${value} h`, name]}
 											labelFormatter={(label) => `Den ${label}`}
 										/>
+										{(projects || []).map((project) => (
+											<Bar
+												key={project.id}
+												dataKey={project.id}
+												name={project.name}
+												stackId="a"
+												fill={project.color}
+												barSize={20}
+											/>
+										))}
 										<Bar
-											dataKey="hours"
-											fill="var(--primary)"
-											radius={[4, 4, 0, 0]}
+											dataKey="Neznámý"
+											name="Neznámé"
+											stackId="a"
+											fill="var(--muted-foreground)"
+											barSize={20}
 										/>
 									</BarChart>
 								</ResponsiveContainer>
