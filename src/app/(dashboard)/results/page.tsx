@@ -91,13 +91,13 @@ export default function ResultsPage() {
 	const stats = useMemo(() => {
 		if (!logs || !projects) return { totalHours: 0, byProject: [], byDay: [] };
 
-		// Total hours (each log is 1 hour)
-		const totalHours = logs.length;
+		// Total hours (each log is 0.5 hours)
+		const totalHours = logs.length * 0.5;
 
 		// By Project
 		const projectHours: Record<string, number> = {};
 		logs.forEach((log) => {
-			projectHours[log.projectId] = (projectHours[log.projectId] || 0) + 1;
+			projectHours[log.projectId] = (projectHours[log.projectId] || 0) + 0.5;
 		});
 
 		const byProject = Object.entries(projectHours)
@@ -130,7 +130,7 @@ export default function ResultsPage() {
 			if (dayData !== undefined) {
 				const project = projects.find((p) => p.id === log.projectId);
 				const key = project ? project.id : "Neznámý";
-				dayData[key] = (dayData[key] || 0) + 1;
+				dayData[key] = (dayData[key] || 0) + 0.5;
 			}
 		});
 
@@ -197,31 +197,37 @@ export default function ResultsPage() {
 
 							{/* Earnings Card */}
 							<div className="flex flex-col rounded-xl border border-border bg-card/50 p-6">
-								<h3 className="mb-4 font-semibold text-lg text-foreground">
+								<h3 className="mb-4 font-semibold text-foreground text-lg">
 									Finanční přehled
 								</h3>
 								<div className="flex flex-col gap-3">
 									<div className="flex flex-col gap-1">
-										<label htmlFor="hourly-rate" className="text-muted-foreground text-xs font-medium">
+										<label
+											className="font-medium text-muted-foreground text-xs"
+											htmlFor="hourly-rate"
+										>
 											Hodinová sazba (Kč/h)
 										</label>
 										<input
-											id="hourly-rate"
-											type="number"
-											min="0"
-											placeholder="Zadejte sazbu..."
 											className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none"
-											value={hourlyRate}
+											id="hourly-rate"
+											min="0"
 											onChange={(e) => handleHourlyRateChange(e.target.value)}
+											placeholder="Zadejte sazbu..."
+											type="number"
+											value={hourlyRate}
 										/>
 									</div>
 									<div className="mt-2 flex flex-col">
-										<span className="text-muted-foreground text-xs font-medium">
+										<span className="font-medium text-muted-foreground text-xs">
 											Odhadovaný výdělek
 										</span>
-										<span className="font-extrabold text-3xl text-primary mt-1">
-											{((typeof hourlyRate === "number" ? hourlyRate : 0) * stats.totalHours).toLocaleString("cs-CZ")}{" "}
-											<span className="text-lg font-semibold">Kč</span>
+										<span className="mt-1 font-extrabold text-3xl text-primary">
+											{(
+												(typeof hourlyRate === "number" ? hourlyRate : 0) *
+												stats.totalHours
+											).toLocaleString("cs-CZ")}{" "}
+											<span className="font-semibold text-lg">Kč</span>
 										</span>
 									</div>
 								</div>
@@ -303,8 +309,8 @@ export default function ResultsPage() {
 							<div className="h-72 w-full">
 								<ResponsiveContainer height="100%" width="100%">
 									<BarChart
-										data={stats.byDay}
 										barSize={20}
+										data={stats.byDay}
 										margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
 									>
 										<CartesianGrid
@@ -332,25 +338,28 @@ export default function ResultsPage() {
 												borderRadius: "8px",
 											}}
 											cursor={{ fill: "rgba(255,255,255,0.05)" }}
-											formatter={(value: any, name: any) => [`${value} h`, name]}
+											formatter={(value: any, name: any) => [
+												`${value} h`,
+												name,
+											]}
 											labelFormatter={(label) => `Den ${label}`}
 										/>
 										{(projects || []).map((project) => (
 											<Bar
-												key={project.id}
+												barSize={20}
 												dataKey={project.id}
+												fill={project.color}
+												key={project.id}
 												name={project.name}
 												stackId="a"
-												fill={project.color}
-												barSize={20}
 											/>
 										))}
 										<Bar
+											barSize={20}
 											dataKey="Neznámý"
+											fill="var(--muted-foreground)"
 											name="Neznámé"
 											stackId="a"
-											fill="var(--muted-foreground)"
-											barSize={20}
 										/>
 									</BarChart>
 								</ResponsiveContainer>

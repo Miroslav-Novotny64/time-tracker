@@ -21,9 +21,10 @@ const formatDate = (date: Date) => {
 	return `${y}-${m}-${d}`;
 };
 
-const timeSlots = Array.from({ length: 24 }, (_, i) => {
-	const h = i;
-	return `${h.toString().padStart(2, "0")}:00`;
+const timeSlots = Array.from({ length: 48 }, (_, i) => {
+	const h = Math.floor(i / 2);
+	const m = i % 2 === 0 ? "00" : "30";
+	return `${h.toString().padStart(2, "0")}:${m}`;
 });
 
 export default function CalendarPage() {
@@ -269,8 +270,8 @@ export default function CalendarPage() {
 			<ScrollArea className="flex-1 rounded-xl border border-border bg-card/30">
 				<div
 					className="min-w-[800px] animate-calendar-change uppercase"
-					style={{ fontFamily: "Arial, sans-serif" }}
 					key={startDateStr}
+					style={{ fontFamily: "Arial, sans-serif" }}
 				>
 					<div className="sticky top-0 z-10 flex border-border border-b bg-card">
 						<div className="flex w-28 shrink-0 items-center justify-center border-border border-r p-3 text-center font-medium text-muted-foreground text-xs">
@@ -278,7 +279,7 @@ export default function CalendarPage() {
 						</div>
 						{weekDays.map((day) => (
 							<div
-								className="flex-1 min-w-0 border-border border-r p-3 text-center last:border-0"
+								className="min-w-0 flex-1 border-border border-r p-3 text-center last:border-0"
 								key={day.toISOString()}
 							>
 								<div className="font-semibold text-sm">
@@ -292,62 +293,70 @@ export default function CalendarPage() {
 					</div>
 
 					{/* Time Rows */}
-					{timeSlots.map((time) => (
-						<div
-							className="flex border-border/50 border-b transition-colors last:border-0 hover:bg-secondary/50"
-							id={`hour-${time}`}
-							key={time}
-						>
-							<div className="flex w-28 shrink-0 items-center justify-center border-border border-r p-2 text-center text-muted-foreground text-[11px] tracking-tight whitespace-nowrap">
-								{time} - {String((Number.parseInt(time.split(":")[0]!) + 1) % 24).padStart(2, "0")}:00
-							</div>
-							{weekDays.map((day) => {
-								const dateStr = formatDate(day);
-								const log = getLogForCell(dateStr, time);
+					{timeSlots.map((time) => {
+						const [hourStr, minStr] = time.split(":");
+						const h = Number.parseInt(hourStr!);
+						const nextH = minStr === "30" ? (h + 1) % 24 : h;
+						const nextM = minStr === "30" ? "00" : "30";
+						const nextTime = `${nextH.toString().padStart(2, "0")}:${nextM}`;
 
-								return (
-									<div
-										className="flex flex-1 min-w-0 cursor-pointer items-center justify-center border-border/50 border-r p-1 transition-colors last:border-0"
-										key={dateStr}
-										onClick={() => handleCellClick(dateStr, time)}
-										onKeyDown={(e) => {
-											if (e.key === "Enter" || e.key === " ") {
-												e.preventDefault();
-												handleCellClick(dateStr, time);
-											}
-										}}
-										role="button"
-										tabIndex={0}
-									>
+						return (
+							<div
+								className="flex border-border/50 border-b transition-colors last:border-0 hover:bg-secondary/50"
+								id={`hour-${time}`}
+								key={time}
+							>
+								<div className="flex w-28 shrink-0 items-center justify-center whitespace-nowrap border-border border-r p-2 text-center text-[11px] text-muted-foreground tracking-tight">
+									{time} - {nextTime}
+								</div>
+								{weekDays.map((day) => {
+									const dateStr = formatDate(day);
+									const log = getLogForCell(dateStr, time);
+
+									return (
 										<div
-											className={`flex h-10 w-full items-center justify-center gap-1 overflow-hidden rounded border transition-all ${
-												log
-													? "border-transparent shadow-sm"
-													: "border-border hover:border-border/60"
-											}`}
-											style={{
-												backgroundColor: log
-													? log.project.color
-													: "transparent",
+											className="flex min-w-0 flex-1 cursor-pointer items-center justify-center border-border/50 border-r p-1 transition-colors last:border-0"
+											key={dateStr}
+											onClick={() => handleCellClick(dateStr, time)}
+											onKeyDown={(e) => {
+												if (e.key === "Enter" || e.key === " ") {
+													e.preventDefault();
+													handleCellClick(dateStr, time);
+												}
 											}}
+											role="button"
+											tabIndex={0}
 										>
-											{log && (
-												<>
-													<Check
-														className="shrink-0 text-foreground/80 drop-shadow-sm"
-														size={14}
-													/>
-													<span className="truncate px-1 font-semibold text-foreground text-[10px] leading-tight drop-shadow-md">
-														{log.project.name}
-													</span>
-												</>
-											)}
+											<div
+												className={`flex h-10 w-full items-center justify-center gap-1 overflow-hidden rounded border transition-all ${
+													log
+														? "border-transparent shadow-sm"
+														: "border-border hover:border-border/60"
+												}`}
+												style={{
+													backgroundColor: log
+														? log.project.color
+														: "transparent",
+												}}
+											>
+												{log && (
+													<>
+														<Check
+															className="shrink-0 text-foreground/80 drop-shadow-sm"
+															size={14}
+														/>
+														<span className="truncate px-1 font-semibold text-[10px] text-foreground leading-tight drop-shadow-md">
+															{log.project.name}
+														</span>
+													</>
+												)}
+											</div>
 										</div>
-									</div>
-								);
-							})}
-						</div>
-					))}
+									);
+								})}
+							</div>
+						);
+					})}
 				</div>
 			</ScrollArea>
 		</div>

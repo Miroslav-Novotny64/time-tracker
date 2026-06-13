@@ -23,7 +23,11 @@ export default function RootLayout({
 	children,
 }: Readonly<{ children: React.ReactNode }>) {
 	return (
-		<html className={`${funnelDisplay.variable}`} lang="cs" suppressHydrationWarning>
+		<html
+			className={`${funnelDisplay.variable}`}
+			lang="cs"
+			suppressHydrationWarning
+		>
 			<body>
 				<TRPCReactProvider>
 					<ThemeProvider
