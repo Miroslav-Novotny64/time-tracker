@@ -2,10 +2,10 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
 	return {
-		name: "Miroslav Novotný",
-		short_name: "M. Novotný",
+		name: "Sledování času",
+		short_name: "Sledování času",
 		description:
-			"Portfolio of Miroslav Novotný - Full-stack Developer & Student",
+			"Jednoduchá aplikace pro sledování a správu času stráveného na projektech",
 		start_url: "/",
 		display: "standalone",
 		background_color: "#0f0f0f",
