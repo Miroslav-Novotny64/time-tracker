@@ -147,30 +147,46 @@ export default function ResultsPage() {
 
 	return (
 		<ScrollArea className="h-full w-full">
-			<div className="mx-auto w-full max-w-6xl p-8">
-				<div className="mb-8 flex items-center justify-between">
-					<h1 className="font-bold text-3xl">Výsledky</h1>
-					<div className="flex items-center gap-4 rounded-xl border border-border bg-card p-2">
-						<button
-							className="rounded p-1 transition-colors hover:bg-secondary"
-							onClick={handlePrevMonth}
-							type="button"
-						>
-							<ChevronLeft size={20} />
-						</button>
-						<span className="w-32 text-center font-semibold">
-							{currentMonth.toLocaleDateString("cs-CZ", {
-								month: "long",
-								year: "numeric",
-							})}
-						</span>
-						<button
-							className="rounded p-1 transition-colors hover:bg-secondary"
-							onClick={handleNextMonth}
-							type="button"
-						>
-							<ChevronRight size={20} />
-						</button>
+			<div className="mx-auto w-full max-w-6xl p-4 md:p-8">
+				<div className="mb-6 flex flex-col gap-4 md:mb-8 md:flex-row md:items-center md:justify-between">
+					<h1 className="font-bold text-2xl md:text-3xl">Výsledky</h1>
+					<div className="flex flex-col items-stretch gap-2 rounded-xl border border-border bg-card p-3 sm:flex-row sm:items-center sm:gap-4">
+						<div className="flex items-center justify-center gap-2">
+							<button
+								aria-label="Předchozí měsíc"
+								className="touch-manipulation rounded-lg p-2 transition-colors hover:bg-secondary"
+								onClick={handlePrevMonth}
+								type="button"
+							>
+								<ChevronLeft size={20} />
+							</button>
+							<span className="min-w-0 flex-1 text-center font-semibold text-sm sm:w-32 sm:flex-none">
+								{currentMonth.toLocaleDateString("cs-CZ", {
+									month: "long",
+									year: "numeric",
+								})}
+							</span>
+							<button
+								aria-label="Další měsíc"
+								className="touch-manipulation rounded-lg p-2 transition-colors hover:bg-secondary"
+								onClick={handleNextMonth}
+								type="button"
+							>
+								<ChevronRight size={20} />
+							</button>
+						</div>
+						<input
+							className="touch-manipulation w-full rounded-lg border border-border bg-background px-3 py-2 text-center text-sm focus:border-primary focus:outline-none sm:w-auto"
+							onChange={(e) => {
+								if (!e.target.value) return;
+								const [year, month] = e.target.value.split("-").map(Number);
+								if (year && month) {
+									setCurrentMonth(new Date(year, month - 1, 1));
+								}
+							}}
+							type="month"
+							value={`${currentMonth.getFullYear()}-${String(currentMonth.getMonth() + 1).padStart(2, "0")}`}
+						/>
 					</div>
 				</div>
 
@@ -209,7 +225,7 @@ export default function ResultsPage() {
 											Hodinová sazba (Kč/h)
 										</label>
 										<input
-											className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none"
+											className="touch-manipulation w-full rounded-lg border border-border bg-background px-3 py-2.5 text-base md:text-sm focus:border-primary focus:outline-none"
 											id="hourly-rate"
 											min="0"
 											onChange={(e) => handleHourlyRateChange(e.target.value)}
@@ -241,8 +257,8 @@ export default function ResultsPage() {
 								<h3 className="font-semibold text-lg">Čas podle projektů</h3>
 							</div>
 							{stats.byProject.length > 0 ? (
-								<div className="flex h-64 items-center">
-									<div className="h-full flex-1">
+								<div className="flex h-64 flex-col items-center gap-4 sm:flex-row">
+									<div className="h-full w-full flex-1">
 										<ResponsiveContainer height="100%" width="100%">
 											<PieChart>
 												<Pie
@@ -273,7 +289,7 @@ export default function ResultsPage() {
 											</PieChart>
 										</ResponsiveContainer>
 									</div>
-									<div className="flex flex-col gap-3 pr-8">
+									<div className="flex w-full flex-col gap-3 sm:pr-8">
 										{stats.byProject.map((project) => (
 											<div
 												className="flex items-center gap-2"

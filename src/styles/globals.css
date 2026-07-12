@@ -93,3 +93,29 @@
 .animate-calendar-change {
 	animation: calendarTransition 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+@utility pb-safe {
+	padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@utility touch-manipulation {
+	touch-action: manipulation;
+}
+
+input[type="date"],
+input[type="month"] {
+	-webkit-appearance: none;
+	appearance: none;
+	min-height: 2.75rem;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="month"]::-webkit-calendar-picker-indicator {
+	cursor: pointer;
+	opacity: 0.7;
+}
+
+.dark input[type="date"]::-webkit-calendar-picker-indicator,
+.dark input[type="month"]::-webkit-calendar-picker-indicator {
+	filter: invert(1);
+}

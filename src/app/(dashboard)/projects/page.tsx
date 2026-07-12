@@ -36,13 +36,13 @@ export default function ProjectsPage() {
 
 	return (
 		<ScrollArea className="h-full w-full">
-			<div className="mx-auto w-full max-w-4xl p-8">
-				<h1 className="mb-8 font-bold text-3xl">Projekty</h1>
+			<div className="mx-auto w-full max-w-4xl p-4 md:p-8">
+				<h1 className="mb-6 font-bold text-2xl md:mb-8 md:text-3xl">Projekty</h1>
 
-				<div className="mb-8 rounded-xl border border-border bg-card p-6">
-					<h2 className="mb-4 font-semibold text-xl">Vytvořit nový projekt</h2>
+				<div className="mb-6 rounded-xl border border-border bg-card p-4 md:mb-8 md:p-6">
+					<h2 className="mb-4 font-semibold text-lg md:text-xl">Vytvořit nový projekt</h2>
 					<form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-						<div className="flex gap-4">
+						<div className="flex flex-col gap-4 sm:flex-row">
 							<div className="flex-1">
 								<label
 									className="mb-1 block font-medium text-muted-foreground text-sm"
@@ -51,7 +51,7 @@ export default function ProjectsPage() {
 									Název
 								</label>
 								<input
-									className="w-full rounded-lg border border-border bg-background px-4 py-2 focus:border-primary focus:outline-none"
+									className="touch-manipulation w-full rounded-lg border border-border bg-background px-4 py-2.5 text-base md:text-sm focus:border-primary focus:outline-none"
 									id="projectName"
 									onChange={(e) => setName(e.target.value)}
 									placeholder="např. Redesign webu"
@@ -86,7 +86,7 @@ export default function ProjectsPage() {
 								Popis (volitelné)
 							</label>
 							<textarea
-								className="w-full rounded-lg border border-border bg-background px-4 py-2 focus:border-primary focus:outline-none"
+								className="touch-manipulation w-full rounded-lg border border-border bg-background px-4 py-2.5 text-base md:text-sm focus:border-primary focus:outline-none"
 								id="projectDescription"
 								onChange={(e) => setDescription(e.target.value)}
 								placeholder="Název klienta, poznámky, atd."
@@ -95,7 +95,7 @@ export default function ProjectsPage() {
 							/>
 						</div>
 						<button
-							className="flex items-center gap-2 self-end rounded-lg bg-primary px-6 py-2 font-medium text-foreground transition-colors hover:bg-primary disabled:opacity-50"
+							className="touch-manipulation flex items-center justify-center gap-2 self-stretch rounded-lg bg-primary px-6 py-2.5 font-medium text-foreground transition-colors hover:bg-primary disabled:opacity-50 sm:self-end"
 							disabled={createProject.isPending}
 							type="submit"
 						>
