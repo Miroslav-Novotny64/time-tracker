@@ -21,10 +21,9 @@ const formatDate = (date: Date) => {
 
 const isSameDay = (a: Date, b: Date) => formatDate(a) === formatDate(b);
 
-const getCurrentTimeSlot = () => {
-	const now = new Date();
-	const h = now.getHours();
-	const m = now.getMinutes() >= 30 ? "30" : "00";
+const getCurrentTimeSlot = (date: Date) => {
+	const h = date.getHours();
+	const m = date.getMinutes() >= 30 ? "30" : "00";
 	return `${h.toString().padStart(2, "0")}:${m}`;
 };
 
@@ -33,6 +32,19 @@ const timeSlots = Array.from({ length: 48 }, (_, i) => {
 	const m = i % 2 === 0 ? "00" : "30";
 	return `${h.toString().padStart(2, "0")}:${m}`;
 });
+
+function useClientNow() {
+	const [now, setNow] = useState<Date | null>(null);
+
+	useEffect(() => {
+		const update = () => setNow(new Date());
+		update();
+		const interval = setInterval(update, 30_000);
+		return () => clearInterval(interval);
+	}, []);
+
+	return now;
+}
 
 function useIsMobile() {
 	const [isMobile, setIsMobile] = useState(false);
@@ -51,10 +63,10 @@ function useIsMobile() {
 export default function CalendarPage() {
 	const utils = api.useUtils();
 	const isMobile = useIsMobile();
-	const today = useMemo(() => new Date(), []);
-	const [currentDate, setCurrentDate] = useState(today);
+	const now = useClientNow();
+	const [currentDate, setCurrentDate] = useState(() => new Date());
 	const [activeProjectId, setActiveProjectId] = useState<string | null>(null);
-	const currentTimeSlot = useMemo(() => getCurrentTimeSlot(), []);
+	const currentTimeSlot = now ? getCurrentTimeSlot(now) : null;
 
 	useEffect(() => {
 		const saved = localStorage.getItem("activeProjectId");
@@ -64,6 +76,7 @@ export default function CalendarPage() {
 	}, []);
 
 	useEffect(() => {
+		if (!currentTimeSlot) return;
 		setTimeout(() => {
 			const el = document.getElementById(`hour-${currentTimeSlot}`);
 			if (el) {
@@ -327,7 +340,7 @@ export default function CalendarPage() {
 					</button>
 				</div>
 
-				{!isSameDay(currentDate, today) && (
+				{now && !isSameDay(currentDate, now) && (
 					<button
 						className="touch-manipulation self-center rounded-lg bg-primary/10 px-4 py-1.5 font-medium text-primary text-sm transition-colors hover:bg-primary/20"
 						onClick={handleGoToToday}
@@ -349,7 +362,7 @@ export default function CalendarPage() {
 							Čas
 						</div>
 						{displayDays.map((day) => {
-							const isToday = isSameDay(day, today);
+							const isToday = now !== null && isSameDay(day, now);
 							return (
 								<div
 									className={`min-w-0 flex-1 border-border border-r p-2 text-center last:border-0 md:p-3 ${
@@ -378,7 +391,8 @@ export default function CalendarPage() {
 						const nextH = minStr === "30" ? (h + 1) % 24 : h;
 						const nextM = minStr === "30" ? "00" : "30";
 						const nextTime = `${nextH.toString().padStart(2, "0")}:${nextM}`;
-						const isCurrentSlot = time === currentTimeSlot;
+						const isCurrentSlot =
+							currentTimeSlot !== null && time === currentTimeSlot;
 
 						return (
 							<div
@@ -400,7 +414,7 @@ export default function CalendarPage() {
 								{displayDays.map((day) => {
 									const dateStr = formatDate(day);
 									const log = getLogForCell(dateStr, time);
-									const isToday = isSameDay(day, today);
+									const isToday = now !== null && isSameDay(day, now);
 
 									return (
 										<div
