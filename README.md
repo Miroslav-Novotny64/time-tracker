@@ -44,3 +44,7 @@ Jednoduchá webová aplikace pro sledování odpracovaného času na projektech.
    ```
 
 Aplikace poběží na adrese [http://localhost:3000](http://localhost:3000).
+
+## Produkční verze
+
+Nebo využijte produkční verzi na mých webovách stránkých [zde](https://time-tracker.novotnymiroslav.cz/)
